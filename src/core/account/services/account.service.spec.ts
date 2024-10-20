@@ -4,6 +4,7 @@ import { Repository, EntityManager } from 'typeorm';
 import { Account } from '../entities/account.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BadRequestException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 describe('AccountService', () => {
   let service: AccountService;
@@ -20,12 +21,21 @@ describe('AccountService', () => {
     save: jest.fn(),
   };
 
+  const mockCache = {
+    get: jest.fn(),
+    set: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccountService,
         { provide: getRepositoryToken(Account), useValue: mockAccountRepo },
         { provide: EntityManager, useValue: mockEntityManager },
+        {
+            provide: CACHE_MANAGER,
+            useValue: mockCache,
+        },
       ],
     }).compile();
 

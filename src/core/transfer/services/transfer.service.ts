@@ -8,6 +8,7 @@ import { InitiateTransferInput } from "../interfaces/transfer.interface";
 import { AccountService } from "../../../core/account/services/account.service";
 import { UserService } from "../../../core/user/services/user.service";
 import * as randomstring from 'randomstring';
+import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 
 
 
@@ -30,7 +31,7 @@ export class TransferService {
     const {  sender, amount, receiver} = initiateTransferInput
     return this.datasource.transaction(async (manager) => {
         const senderAccount = await this.userService.findByUserId(sender);
-        const receiverAccount = await this.userService.findByUsername(receiver)
+        const receiverAccount = await this.userService.findByUsername(receiver, true)
 
         if (!receiverAccount) {
             throw new BadRequestException('Recipient not found');

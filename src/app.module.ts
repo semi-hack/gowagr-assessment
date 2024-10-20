@@ -1,4 +1,10 @@
-import { ClassSerializerInterceptor, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -12,25 +18,41 @@ import { PaginationMiddleware } from './shared/middlewares/pagination.middleware
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import ExceptionsFilter from './shared/filters/exception.filter';
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
+import { redisStore } from 'cache-manager-redis-yet';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [typeorm]
+      load: [typeorm],
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => ({
+        store: await redisStore({
+          socket: {
+            host: 'localhost',
+            port: 4379,
+          },
+        }),
+        ttl: 300,
+      }),
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => (configService.get('typeorm')),
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
       inject: [ConfigService],
     }),
     UserModule,
     AccountModule,
     AuthModule,
-    TransferModule
+    TransferModule,
   ],
   controllers: [AppController],
-  providers: [AppService,
+  providers: [
+    AppService,
     {
       provide: APP_FILTER,
       useClass: ExceptionsFilter,
@@ -45,7 +67,6 @@ import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
     },
   ],
 })
-
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     return consumer

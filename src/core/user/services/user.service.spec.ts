@@ -10,6 +10,7 @@ import { CreateUserInput } from '../interfaces/user.interface';
 import { PaginatedResult } from '../../../shared/interfaces/paginated-result.interface';
 import { MockAccountService } from '../../../../test/mocks/services/account.service';
 import * as randomstring from 'randomstring';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 describe('UserService', () => {
   let service: UserService;
@@ -18,7 +19,7 @@ describe('UserService', () => {
   let dataSource: DataSource;
 
   const mockUser = {
-    id: '1',
+    id: '44fd2db2-eb17-47fb-bf3b-055bab132e5b',
     username: 'john_doe',
     password: 'hashed_password',
     account: {},
@@ -32,6 +33,11 @@ describe('UserService', () => {
   const mockPaginatedResult: PaginatedResult<User> = {
     records: [mockUser],
     count: 1,
+  };
+
+  const mockCache = {
+    get: jest.fn(),
+    set: jest.fn(),
   };
 
   class MockUserService extends UserService {
@@ -74,7 +80,12 @@ describe('UserService', () => {
           provide: AccountService,
           useValue: {
             create: jest.fn().mockResolvedValue({}),
+            getBalance: jest.fn().mockResolvedValue(1000),
           },
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: mockCache,
         },
       ],
     })
@@ -136,6 +147,27 @@ describe('UserService', () => {
     });
   });
 
+  describe('findOne', () => {
+    it('should return a user with cached balance', async () => {
+      jest.spyOn(userRepo, 'findOne').mockResolvedValue(mockUser);
+      mockCache.get.mockResolvedValue(1000);
+
+      const result = await service.findOne('44fd2db2-eb17-47fb-bf3b-055bab132e5b');
+
+      expect(result).toEqual({
+        id: '44fd2db2-eb17-47fb-bf3b-055bab132e5b',
+        username: 'john_doe',
+        balance: 1000,
+      });
+      expect(userRepo.findOne).toHaveBeenCalledWith({
+        where: { id: '44fd2db2-eb17-47fb-bf3b-055bab132e5b' },
+        relations: ['account'],
+      });
+      expect(mockCache.get).toHaveBeenCalledWith('user_balance_undefined');
+      expect(mockCache.set).not.toHaveBeenCalled();
+    })
+  })
+
   describe('findByUsername', () => {
     it('should return a user by username', async () => {
       jest.spyOn(userRepo, 'findOne').mockResolvedValue(mockUser);
@@ -145,7 +177,6 @@ describe('UserService', () => {
       expect(user).toEqual(mockUser);
       expect(userRepo.findOne).toHaveBeenCalledWith({
         where: { username: 'john_doe' },
-        relations: ['account'],
       });
     });
   });
@@ -154,11 +185,11 @@ describe('UserService', () => {
     it('should return a user by ID', async () => {
       jest.spyOn(userRepo, 'findOne').mockResolvedValue(mockUser);
 
-      const user = await service.findByUserId('1');
+      const user = await service.findByUserId('44fd2db2-eb17-47fb-bf3b-055bab132e5b');
 
       expect(user).toEqual(mockUser);
       expect(userRepo.findOne).toHaveBeenCalledWith({
-        where: { id: '1' },
+        where: { id: '44fd2db2-eb17-47fb-bf3b-055bab132e5b' },
         relations: ['account'],
       });
     });

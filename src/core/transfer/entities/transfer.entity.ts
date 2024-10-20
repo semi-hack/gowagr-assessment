@@ -3,8 +3,8 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } f
 
 @Entity('transfers')
 export class Transfer {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => User, (user) => user.sentTransfers)
   sender: User;

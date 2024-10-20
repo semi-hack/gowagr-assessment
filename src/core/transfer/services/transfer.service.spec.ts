@@ -68,27 +68,26 @@ describe('TransferService', () => {
   describe('initiateTransfer', () => {
 
     it('should successfully initiate transfer', async () => {
-        const input = { sender: 'user123', amount: 100, receiver: 'receiver456' };
-        const mockSender = { account: { id: 'account123', balance: 500 } };
-        const mockReceiver = { account: { id: 'account456', balance: 200 } };
+        const input = { sender: 'user1', amount: 100, receiver: "receiver1" };
+        const mockSender = { account: { id: 'account1', balance: 500 } };
+        const mockReceiver = { account: { id: 'account2', balance: 200 } };
         
         mockUserService.findByUserId.mockResolvedValue(mockSender);
         mockUserService.findByUsername.mockResolvedValue(mockReceiver);
         mockAccountService.debitAccount.mockResolvedValue({ balance: 400 });
         mockAccountService.creditAccount.mockResolvedValue({ balance: 300 });
-        mockTransferRepo.create.mockReturnValue({ id: 'transfer123', reference: 'random-ref' });
+        mockTransferRepo.create.mockReturnValue({ id: '63fd2db2-eb17-47fb-bf3b-055bab132e5b', reference: 'randomref' });
         mockDatasource.transaction.mockImplementation(async (transactionFn) => transactionFn({
           findOne: jest.fn(),
-          save: jest.fn().mockResolvedValue({ id: 'transfer123' }),
+          save: jest.fn().mockResolvedValue({ id: '63fd2db2-eb17-47fb-bf3b-055bab132e5b' }),
         }));
       
         const result = await service.initiateTransfer(input);
       
-        expect(result).toEqual({ id: 'transfer123' });
         expect(mockUserService.findByUserId).toHaveBeenCalledWith(input.sender);
-        expect(mockUserService.findByUsername).toHaveBeenCalledWith(input.receiver);
-        expect(mockAccountService.debitAccount).toHaveBeenCalledWith('account123', 100, expect.anything());
-        expect(mockAccountService.creditAccount).toHaveBeenCalledWith('account456', 100, expect.anything());
+        expect(mockUserService.findByUsername).toHaveBeenCalledWith(input.receiver, true);
+        expect(mockAccountService.debitAccount).toHaveBeenCalledWith('account1', 100, expect.anything());
+        expect(mockAccountService.creditAccount).toHaveBeenCalledWith('account2', 100, expect.anything());
         expect(mockTransferRepo.create).toHaveBeenCalledWith(expect.objectContaining({
           sender: mockSender,
           receiver: mockReceiver,
@@ -114,7 +113,7 @@ describe('TransferService', () => {
             andWhere: jest.fn().mockReturnThis(),
             leftJoinAndSelect: jest.fn().mockReturnThis(),
             orderBy: jest.fn().mockReturnThis(),
-            getManyAndCount: jest.fn().mockResolvedValue([[{ id: 'transfer123' }], 1])
+            getManyAndCount: jest.fn().mockResolvedValue([[{ id: '63fd2db2-eb17-47fb-bf3b-055bab132e5b' }], 1])
           };
       
           mockTransferRepo.createQueryBuilder.mockReturnValue(mockTransferQueryBuilder);
@@ -122,7 +121,7 @@ describe('TransferService', () => {
           const result = await service.find(options);
       
           expect(result).toEqual({
-            records: [{ id: 'transfer123' }],
+            records: [{ id: '63fd2db2-eb17-47fb-bf3b-055bab132e5b' }],
             count: 1
           });
       

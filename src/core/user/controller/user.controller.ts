@@ -19,7 +19,7 @@ export class UserContoller {
   @Get('id')
   async fetchUser(@Req() req: any) {
     const { currentUser } = req    
-    const user = await this.userService.findByUserId(currentUser.id)
+    const user = await this.userService.findOne(currentUser.id)
     return SuccessResponse('Query Successful', user)
   }
 
