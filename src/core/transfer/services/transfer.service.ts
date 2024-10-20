@@ -27,6 +27,12 @@ export class TransferService {
     
   }
 
+  /**
+   * Initiate a transfer
+   * @param initiateTransferInput - The input needed to initiate a transfer
+   * @returns The transfer object
+   * @throws BadRequestException if the recipient is not found
+   */
   async initiateTransfer(initiateTransferInput: InitiateTransferInput ) {
     const {  sender, amount, receiver} = initiateTransferInput
     return this.datasource.transaction(async (manager) => {
@@ -82,6 +88,12 @@ export class TransferService {
     return filter;
   }
 
+  /**
+   * Finds transfers that match the query and returns a paginated result.
+   * 
+   * @param {ServiceMethodOptions} options - The options for the query.
+   * @returns {Promise<PaginatedResult<Transfer>>} The paginated result of transfers.
+   */
   async find(options: ServiceMethodOptions): Promise<PaginatedResult<Transfer>> {
     const { currentUser, query, pagination } = options;
     const filter = this.buildFilter(query);
