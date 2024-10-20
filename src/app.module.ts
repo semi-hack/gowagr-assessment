@@ -1,28 +1,39 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path';
+import typeorm from './database/typeorm';
+import { UserModule } from './core/user/user.module';
+import { AccountModule } from './core/account/account.module';
+import { AuthModule } from './core/auth/auth.module';
+import { TransferModule } from './core/transfer/transfer.module';
+import { PaginationMiddleware } from './shared/middlewares/pagination.middleware';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [typeorm]
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DATABASE_HOST'),
-        port: configService.get('DATABASE_PORT'),
-        username: configService.get('DATABASE_USER'),
-        password: configService.get('DATABASE_PASSWORD'),
-        database: configService.get('DATABASE_NAME'),
-        entities: [join(__dirname, '**', '*.entity.{ts,js}')],
-      }),
+      useFactory: async (configService: ConfigService) => (configService.get('typeorm')),
       inject: [ConfigService],
     }),
+    UserModule,
+    AccountModule,
+    AuthModule,
+    TransferModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    return consumer
+      .apply(PaginationMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.GET });
+  }
+}
