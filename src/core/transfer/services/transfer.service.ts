@@ -37,8 +37,8 @@ export class TransferService {
         }
 
         const balanceBefore = senderAccount.account.balance;
-        const updatedSenderAccount = await this.accountService.debitAccount(senderAccount.account.id, amount);
-        await this.accountService.creditAccount(receiverAccount.account.id, amount);
+        const updatedSenderAccount = await this.accountService.debitAccount(senderAccount.account.id, amount, manager);
+        await this.accountService.creditAccount(receiverAccount.account.id, amount, manager);
 
         const reference = randomstring.generate({
             length: 12,
@@ -89,8 +89,8 @@ export class TransferService {
       .createQueryBuilder('transfer')
       .skip(pagination.skip)
       .take(pagination.take)
-      .where('transfer.senderId = :userId OR transfer.receiverId = :userId', { userId: currentUser.id })
-      .andWhere({ ...filter })
+      .where(filter)
+      .andWhere('transfer.senderId = :userId OR transfer.receiverId = :userId', { userId: currentUser.id })
       .leftJoinAndSelect('transfer.sender', 'sender')
       .leftJoinAndSelect('transfer.receiver', 'receiver')
       .orderBy('transfer.createdAt', 'DESC')

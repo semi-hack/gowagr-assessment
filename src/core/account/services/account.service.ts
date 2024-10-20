@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { EntityManager, Repository } from "typeorm";
 import { Account } from "../entities/account.entity";
 
 
@@ -19,8 +19,8 @@ export class AccountService {
     return account;
   }
 
-  async debitAccount(accountId: string, amount: number): Promise<Account> {
-    const account = await this.accountRepo.findOne({ where: { id: accountId } });
+  async debitAccount(accountId: string, amount: number, manager: EntityManager): Promise<Account> {
+    const account = await manager.findOne(Account, { where: { id: accountId } });
 
     if (!account) {
       throw new BadRequestException('Account not found');
@@ -31,18 +31,18 @@ export class AccountService {
     }
 
     account.balance -= amount;
-    return this.accountRepo.save(account);
+    return manager.save(account);
   }
 
-  async creditAccount(accountId: string, amount: number): Promise<Account> {
-    const account = await this.accountRepo.findOne({ where: { id: accountId } });
+  async creditAccount(accountId: string, amount: number,  manager: EntityManager): Promise<Account> {
+    const account = await manager.findOne(Account, { where: { id: accountId } });
 
     if (!account) {
       throw new BadRequestException('Account not found');
     }
 
     account.balance += amount;
-    return this.accountRepo.save(account);
+    return manager.save(account);
   }
 
 

@@ -1,5 +1,5 @@
-import { User } from "src/core/user/entities/user.entity";
-import { DecimalColumnToNumberTransformer } from "src/shared/utils/column-transformer";
+import { User } from "../../../core/user/entities/user.entity";
+import { DecimalColumnToNumberTransformer } from "../../../shared/utils/column-transformer";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 

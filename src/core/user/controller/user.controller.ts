@@ -1,8 +1,8 @@
 import { Controller, Post, Get, Req, UseGuards, Body, Param } from "@nestjs/common";
 import { UserService } from "../services/user.service";
 import { CreateUserAccountDto } from "../dto/user.dto";
-import { JWTHTTPAuthGuard } from "src/shared/guards/auth.guard";
-import { SuccessResponse } from "src/shared/utils/response.util";
+import { JWTHTTPAuthGuard } from "../../../shared/guards/auth.guard";
+import { SuccessResponse } from "../../../shared/utils/response.util";
 
 
 @Controller('users')

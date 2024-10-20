@@ -4,9 +4,9 @@ import { DataSource, Repository } from 'typeorm';
 import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserInput } from '../interfaces/user.interface';
-import { ServiceMethodOptions } from 'src/shared/interfaces/service-method-options';
-import { PaginatedResult } from 'src/shared/interfaces/paginated-result.interface';
-import { AccountService } from 'src/core/account/services/account.service';
+import { ServiceMethodOptions } from '../../../shared/interfaces/service-method-options';
+import { PaginatedResult } from '../../../shared/interfaces/paginated-result.interface';
+import { AccountService } from '../../../core/account/services/account.service';
 
 @Injectable()
 export class UserService {
@@ -25,6 +25,7 @@ export class UserService {
     }
   }
 
+
   async register(input: CreateUserInput): Promise<User> {
     return this.datasource.transaction(async (manager) => {
 
@@ -42,6 +43,7 @@ export class UserService {
         return savedUser
     })
   }
+  
 
   async find(options: ServiceMethodOptions): Promise<PaginatedResult<User>> {
     const { query, pagination } = options;
