@@ -5,8 +5,8 @@ import { Between, DataSource, LessThanOrEqual, MoreThanOrEqual, Repository } fro
 import { ServiceMethodOptions } from "src/shared/interfaces/service-method-options";
 import { PaginatedResult } from "src/shared/interfaces/paginated-result.interface";
 import { InitiateTransferInput } from "../interfaces/transfer.interface";
-import { AccountService } from "src/core/account/services/account.service";
-import { UserService } from "src/core/user/services/user.service";
+import { AccountService } from "../../../core/account/services/account.service";
+import { UserService } from "../../../core/user/services/user.service";
 import * as randomstring from 'randomstring';
 
 
