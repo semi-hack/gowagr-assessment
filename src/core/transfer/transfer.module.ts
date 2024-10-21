@@ -6,10 +6,6 @@ import { AccountModule } from "../account/account.module";
 import { UserModule } from "../user/user.module";
 import { TransferController } from "./controllers/transfer.controller";
 
-
-
-
-@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([Transfer]),

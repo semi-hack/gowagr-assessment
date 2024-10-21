@@ -1,14 +1,13 @@
-import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { EntityManager, Repository } from "typeorm";
+import { DataSource, EntityManager, Repository } from "typeorm";
 import { Account } from "../entities/account.entity";
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
-
-
 
 @Injectable()
 export class AccountService {
   constructor(
+    private readonly datasource: DataSource,
     @InjectRepository(Account)
     private readonly accountRepo: Repository<Account>,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
@@ -116,6 +115,20 @@ export class AccountService {
     return updatedAccount;
   }
 
+  /**
+   * Funds an account with a given amount in a transactional manner.
+   * 
+   * @param {string} accountId - The ID of the account to fund.
+   * @param {number} amount - The amount to fund the account with.
+   * @returns {Promise<Account>} A Promise that resolves to the updated account.
+   */
+  async fundAccount(accountId: string, amount: number): Promise<Account> {
+    return this.datasource.transaction(async (manager) => {
+      const account = await this.creditAccount(accountId, amount, manager)
+      return account
+    })
+
+  }
 
 }
 

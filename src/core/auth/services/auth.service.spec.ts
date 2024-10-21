@@ -62,7 +62,7 @@ describe('AuthService', () => {
         mockUserService.findByUsername.mockResolvedValue(mockUser); 
       
         jest.spyOn(bcrypt, 'compare').mockResolvedValue(true); 
-        jest.spyOn(jwt, 'sign').mockReturnValue('fake-jwt-token'); 
+        jest.spyOn(jwt, 'sign').mockReturnValue('fake-token'); 
       
         const input = { username: 'testuser', password: 'password' };
         const result = await service.login(input);
@@ -70,7 +70,7 @@ describe('AuthService', () => {
         expect(result).toEqual({
           id: mockUser.id,
           username: mockUser.username,
-          token: 'fake-jwt-token',
+          token: 'fake-token',
         });
         expect(mockUserService.findByUsername).toHaveBeenCalledWith(input.username);
         expect(bcrypt.compare).toHaveBeenCalledWith(input.password, mockUser.password);

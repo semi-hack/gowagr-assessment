@@ -1,8 +1,9 @@
 import { Body, Controller, forwardRef, Get, Inject, Post, Req, UseGuards } from "@nestjs/common";
 import { TransferService } from "../services/transfer.service";
-import { JWTHTTPAuthGuard } from "src/shared/guards/auth.guard";
+import { JWTHTTPAuthGuard } from "../../../shared/guards/auth.guard";
 import { InitiateTransferDto } from "../dto/transfer.dto";
-import { SuccessResponse } from "src/shared/utils/response.util";
+import { SuccessResponse } from "../../../shared/utils/response.util";
+import { ApiTags } from "@nestjs/swagger";
 
 
 @Controller('transfers')
@@ -14,6 +15,7 @@ export class TransferController {
 
     
     @Post()
+    @ApiTags('Transfer')
     @UseGuards(JWTHTTPAuthGuard)
     async intiate(@Req() req: any, @Body() body: InitiateTransferDto ) {
       const { currentUser } = req
@@ -25,6 +27,7 @@ export class TransferController {
     }
 
     @Get()
+    @ApiTags('Transfer')
     @UseGuards(JWTHTTPAuthGuard)
     async fetchTransfers(@Req() req: any) {
         const { currentUser, query, pagination } = req

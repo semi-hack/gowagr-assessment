@@ -4,7 +4,7 @@ import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 export class CreateUserAccountDto {
   @IsString()
   @IsNotEmpty()
-  @MinLength(1)
+  @MinLength(2)
   @ApiProperty({
     example: 'jd',
   })

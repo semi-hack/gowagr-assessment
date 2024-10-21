@@ -6,16 +6,12 @@ import { UserContoller } from "./controller/user.controller";
 import { AccountModule } from "../account/account.module";
 
 
-
-
-@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => AccountModule),
   ],
-  providers: [UserService,
-  ],
+  providers: [UserService],
   controllers: [UserContoller],
   exports: [UserService],
 })

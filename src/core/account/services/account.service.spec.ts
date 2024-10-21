@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountService } from './account.service';
-import { Repository, EntityManager } from 'typeorm';
+import { Repository, EntityManager, DataSource } from 'typeorm';
 import { Account } from '../entities/account.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BadRequestException } from '@nestjs/common';
@@ -30,6 +30,16 @@ describe('AccountService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccountService,
+        {
+            provide: DataSource,
+            useValue: {
+              transaction: jest.fn().mockImplementation((fn) =>
+                fn({
+                  save: jest.fn(),
+                }),
+              ),
+            },
+        },
         { provide: getRepositoryToken(Account), useValue: mockAccountRepo },
         { provide: EntityManager, useValue: mockEntityManager },
         {

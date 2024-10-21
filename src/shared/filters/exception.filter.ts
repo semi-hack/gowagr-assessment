@@ -24,7 +24,7 @@ export default class ExceptionsFilter implements ExceptionFilter {
         ? exception['response']?.response
           ? exception['response']?.response
           : exception?.message
-        : 'Internal Server Error';
+        : 'Something Went Wrong';
     const responseObj = {
       success: false,
       message,
