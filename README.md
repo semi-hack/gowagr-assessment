@@ -78,7 +78,7 @@ src/
 ├── shared               # filters, utils, middleware etc are contained here
 ├── app.module.ts     # Root module of the application
 ├── main.ts           # Application entry point
-
+```
 
 
 
