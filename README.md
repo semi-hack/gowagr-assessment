@@ -67,13 +67,19 @@ $ npm run start:dev
 ```
 ## Project Structure
 
+```bash
 src/
-├── account/         # Account entity, service, controller
-├── auth/             # Auth service and controller and Authentication-related logic
-├── transfer/        # Transfer entity and services
-├── user/            # User entity, service, controller
+├── core/
+|    ├── account/         # Account entity, service, controller
+|    ├── auth/             # Auth service and controller and Authentication-related logic
+|    ├── transfer/        # Transfer entity and services
+|    ├── user/            # User entity, service, controller
+├── database             # Migrations files 
+├── shared               # filters, utils, middleware etc are contained here
 ├── app.module.ts     # Root module of the application
 ├── main.ts           # Application entry point
+
+
 
 
 ## Test
