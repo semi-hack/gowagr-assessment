@@ -66,7 +66,15 @@ export class TransferService {
         return savedTransfer
     })
   }
-
+  
+  /**
+   * Builds a filter object based on the provided query parameters.
+   * 
+   * @param {Object} query - The query object containing filter parameters.
+   * @param {string} [query.startPeriodDatetime] - The start date and time for filtering transfers.
+   * @param {string} [query.endPeriodDatetime] - The end date and time for filtering transfers.
+   * @returns {Object} The filter object to be used in database queries.
+   */
   buildFilter(query: any) {
     const filter = {};
 

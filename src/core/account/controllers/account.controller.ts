@@ -20,10 +20,16 @@ export class AccountController {
     private readonly accountService: AccountService,
   ) {}
 
+  /**
+   * Funds an account
+   * @param req - The request object
+   * @param body - The body object
+   * @returns { object } - The response object
+   */
   @Post('fund')
   @ApiTags('Account')
   @UseGuards(JWTHTTPAuthGuard)
-  async intiate(@Req() req: any, @Body() body: FundAccountDto) {
+  async initiate(@Req() req: any, @Body() body: FundAccountDto) {
     const { currentUser } = req;
     await this.accountService.fundAccount(currentUser.account.id, body.amount);
     return SuccessResponse('Successful');

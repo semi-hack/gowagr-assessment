@@ -12,8 +12,11 @@ export class AuthController {
   ) {}
 
     /**
-   * Attempts to log in a user
-   */
+     * Logs in a user with the provided credentials
+     * @param {LoginDto} body - The login credentials
+     * @returns {Promise<object>} The response object containing login data
+     * @throws {UnauthorizedException} If the credentials are invalid
+     */
     @Post('login')
     @ApiTags('Auth')
     async login(@Body() body: LoginDto) {

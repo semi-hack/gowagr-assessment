@@ -10,6 +10,11 @@ import { ApiTags } from "@nestjs/swagger";
 export class UserContoller {
   constructor(private readonly userService: UserService) {}
 
+  /**
+   * Registers a new user
+   * @param {CreateUserAccountDto} body - The user data
+   * @returns {Promise<object>} The response object containing the user data
+   */
   @Post()
   @ApiTags('User')
   async register(@Body() body: CreateUserAccountDto) {
@@ -17,6 +22,11 @@ export class UserContoller {
     return SuccessResponse('User Created', user);
   }
 
+  /**
+   * Fetches a user by their ID
+   * @param {any} req - The request object
+   * @returns {Promise<object>} The response object containing the user data
+   */
   @Get('id')
   @ApiTags('User')
   @UseGuards(JWTHTTPAuthGuard)
@@ -26,6 +36,11 @@ export class UserContoller {
     return SuccessResponse('Query Successful', user)
   }
 
+  /**
+   * Fetches a user by their username
+   * @param {string} username - The username
+   * @returns {Promise<object>} The response object containing the user data
+   */
   @Get(':username')
   @ApiTags('User')
   @UseGuards(JWTHTTPAuthGuard)

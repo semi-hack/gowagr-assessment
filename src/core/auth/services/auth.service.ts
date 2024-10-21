@@ -25,6 +25,12 @@ export class AuthService {
     });
   }
 
+  /**
+   * Composes login data for a user
+   * @param user - The user object
+   * @param token - The JWT token
+   * @returns { object } - The login data
+   */
   private composeLoginData(user: User, token: string): LoggedInState {
     const data = {
       id: user.id,
@@ -35,6 +41,11 @@ export class AuthService {
     return data;
   }
 
+  /**
+   * Logs in a user
+   * @param input - The login input
+   * @returns { object | LoggedInState } - The login data
+   */
   async login(input: LoginInput): Promise<object | LoggedInState> {
     const genericMessage = 'Invalid Credentials';
     const user = await this.userService.findByUsername(input.username);
