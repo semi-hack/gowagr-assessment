@@ -25,7 +25,7 @@ export class TransferController {
     @UseGuards(JWTHTTPAuthGuard)
     async initiate(@Req() req: any, @Body() body: InitiateTransferDto ) {
       const { currentUser } = req
-      const transfer = await this.transferService.initiateTransfer({
+      const transfer = await this.transferService.initiateTransferWithRetry({
         sender: currentUser.id,
         ...body
       });

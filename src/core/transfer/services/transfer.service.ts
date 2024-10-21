@@ -67,6 +67,25 @@ export class TransferService {
         return savedTransfer
     })
   }
+
+  /**
+   * Initiates a transfer with retry mechanism
+   * @param {InitiateTransferInput} initiateTransferInput - The input needed to initiate a transfer
+   * @param {number} [retries=3] - The number of retry attempts
+   * @returns {Promise<Transfer>} The saved transfer object
+   * @throws {Error} If all retry attempts fail
+   */
+
+  async initiateTransferWithRetry(initiateTransferInput: InitiateTransferInput, retries: number = 3) {
+    try {
+      return await this.initiateTransfer(initiateTransferInput)
+    } catch (error) {
+      if (error.code === '40001' && retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return this.initiateTransferWithRetry(initiateTransferInput, retries - 1);
+      }
+    }
+  }
   
   /**
    * Builds a filter object based on the provided query parameters.

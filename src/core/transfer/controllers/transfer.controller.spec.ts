@@ -10,6 +10,7 @@ describe('TransferController', () => {
   
     const mockTransferService = {
       initiateTransfer: jest.fn(),
+      initiateTransferWithRetry: jest.fn(),
       find: jest.fn(),
     };
   
@@ -56,11 +57,11 @@ describe('TransferController', () => {
           amount: 100,
         };
   
-        mockTransferService.initiateTransfer.mockResolvedValue(mockTransfer);
+        mockTransferService.initiateTransferWithRetry.mockResolvedValue(mockTransfer);
   
-        const result = await controller.intiate(mockReq, mockBody);
+        const result = await controller.initiate(mockReq, mockBody);
   
-        expect(mockTransferService.initiateTransfer).toHaveBeenCalledWith({
+        expect(mockTransferService.initiateTransferWithRetry).toHaveBeenCalledWith({
           sender: mockReq.currentUser.id,
           ...mockBody,
         });
