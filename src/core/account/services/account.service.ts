@@ -71,7 +71,7 @@ export class AccountService {
    * @throws {BadRequestException} If the account with the specified ID is not found or the balance is insufficient.
    */
   async debitAccount(accountId: string, amount: number, manager: EntityManager): Promise<Account> {
-    const account = await manager.findOne(Account, { where: { id: accountId } });
+    const account = await manager.findOne(Account, { where: { id: accountId }, lock: { mode: 'pessimistic_write' } });
 
     if (!account) {
       throw new BadRequestException('Account not found');
@@ -100,7 +100,7 @@ export class AccountService {
    * @throws {BadRequestException} If the account with the specified ID is not found.
    */
   async creditAccount(accountId: string, amount: number,  manager: EntityManager): Promise<Account> {
-    const account = await manager.findOne(Account, { where: { id: accountId } });
+    const account = await manager.findOne(Account, { where: { id: accountId }, lock: { mode: 'pessimistic_write' } });
 
     if (!account) {
       throw new BadRequestException('Account not found');
