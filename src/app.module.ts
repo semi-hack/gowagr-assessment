@@ -15,11 +15,12 @@ import { AccountModule } from './core/account/account.module';
 import { AuthModule } from './core/auth/auth.module';
 import { TransferModule } from './core/transfer/transfer.module';
 import { PaginationMiddleware } from './shared/middlewares/pagination.middleware';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import ExceptionsFilter from './shared/filters/exception.filter';
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import { redisStore } from 'cache-manager-redis-yet';
 import { CacheModule } from '@nestjs/cache-manager';
+import ValidationPipe from './shared/pipes/validation.pipe';
 
 @Module({
   imports: [
@@ -53,6 +54,14 @@ import { CacheModule } from '@nestjs/cache-manager';
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        stopAtFirstError: true,
+      }),
+    },
     {
       provide: APP_FILTER,
       useClass: ExceptionsFilter,
