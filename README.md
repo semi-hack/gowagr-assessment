@@ -100,4 +100,3 @@ $ npm run test:cov
 You can check all the API endpoints by visiting the following link:
 
 [API Endpoints Documentation](https://documenter.getpostman.com/view/9562205/2sAXxY48eH)
-

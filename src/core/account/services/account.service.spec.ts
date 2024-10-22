@@ -83,6 +83,7 @@ describe('AccountService', () => {
 
       expect(mockEntityManager.findOne).toHaveBeenCalledWith(Account, {
         where: { id: 'account123' },
+        lock: { mode: 'pessimistic_write'}
       });
     });
 
@@ -96,6 +97,7 @@ describe('AccountService', () => {
 
       expect(mockEntityManager.findOne).toHaveBeenCalledWith(Account, {
         where: { id: 'account123' },
+        lock: { mode: 'pessimistic_write'}
       });
     });
 
@@ -114,6 +116,7 @@ describe('AccountService', () => {
 
       expect(mockEntityManager.findOne).toHaveBeenCalledWith(Account, {
         where: { id: 'account123' },
+        lock: { mode: 'pessimistic_write'}
       });
       expect(result.balance).toEqual(100);
       expect(mockEntityManager.save).toHaveBeenCalledWith(updatedAccount);
@@ -130,6 +133,7 @@ describe('AccountService', () => {
 
       expect(mockEntityManager.findOne).toHaveBeenCalledWith(Account, {
         where: { id: 'account123' },
+        lock: { mode: 'pessimistic_write'}
       });
     });
 
@@ -148,6 +152,7 @@ describe('AccountService', () => {
 
       expect(mockEntityManager.findOne).toHaveBeenCalledWith(Account, {
         where: { id: 'account123' },
+        lock: { mode: 'pessimistic_write'}
       });
       expect(result.balance).toEqual(300);
       expect(mockEntityManager.save).toHaveBeenCalledWith(updatedAccount);
